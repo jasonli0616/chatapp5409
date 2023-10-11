@@ -35,7 +35,7 @@ def get_username(ip):
     if username:
         return username[0]
     else:
-        raise KeyError("User with IP Address %s not found." % ip)
+        return None
 
 
 def get_messages():

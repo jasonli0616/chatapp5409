@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App 5409</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="box">
+        <h1>Welcome to Chat App 5409!</h1>
+        <h2>
+            {% if username %}
+
+            Logged in as {{ username }}
+
+
+            {% else %}
+
+            New user
+
+
+            {% endif %}
+        </h2>
+
+    </div>
+    
+</body>
+</html>

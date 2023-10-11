@@ -6,6 +6,15 @@ app = Flask(__name__)
 database.create_tables()
 
 
+@app.route("/")
+def index():
+    ip = request.remote_addr
+    username = database.get_username(ip)
+
+
+    return render_template("index.html", username=username)
+
+
 @app.route("/api/create_user", methods=["POST"])
 def api_create_user():
     ip = request.remote_addr
