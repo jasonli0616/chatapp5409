@@ -1,7 +1,7 @@
 import sqlite3
 import time
 
-db = sqlite3.connect("chatapp5409.db")
+db = sqlite3.connect("chatapp5409.db", check_same_thread=False)
 db_cursor = db.cursor()
 
 
@@ -48,25 +48,6 @@ def get_messages():
         text = message[2]
         sent_time = message[3]
 
-        messages.append(Message(ip, text, sent_time))
+        messages.append({"ip": ip, "text": text, "time": sent_time})
     
     return messages
-
-
-class Message:
-    def __init__(self, ip, message, sent_time) -> None:
-        self.__ip = ip
-        self.__message = message
-        self.__time = sent_time
-    
-    def get_username(self):
-        return get_username(self.__ip)
-    
-    def get_message(self):
-        return self.__message
-    
-    def get_time(self):
-        return self.__time
-    
-    def __repr__(self) -> str:
-        return self.get_message()
