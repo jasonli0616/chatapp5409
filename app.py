@@ -1,34 +1,45 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, flash
+from flask_socketio import SocketIO
+import dotenv
+import os
+import json
 import database
 
+dotenv.load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY")
+socketio = SocketIO(app)
+
 database.create_tables()
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     ip = request.remote_addr
-    username = database.get_username(ip)
+    username = None
+
+    if request.method == "GET":
+        username = database.get_username(ip)
+
+    else:
+        username = request.form["username"]
+        if username:
+            database.create_user(ip, username)
+        else:
+            flash("Username is required.")
 
 
     return render_template("index.html", username=username)
 
 
-@app.route("/api/create_user", methods=["POST"])
-def api_create_user():
-    ip = request.remote_addr
-    username = request.form["username"]
-
-    database.create_user()
-
-    return jsonify(success=True)
-
-
-@app.route("/api/get_messages.json")
-def api_get_messages():
-    messages = database.get_messages()
-    return jsonify(messages)
+@socketio.on("send_message")
+def send_message(data):
+    text = data["text"]
+    if text:
+        ip = request.remote_addr
+        database.send_message(ip, text)
+        socketio.emit("new_message", json.loads(database.get_messages()))
 
 
-app.run("0.0.0.0", 80)
+socketio.run(app, "0.0.0.0", port=80)
