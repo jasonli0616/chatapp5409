@@ -44,10 +44,11 @@ def get_messages():
     messages = []
 
     for message in messages_raw:
+        id = message[0]
         ip = message[1]
         text = message[2]
         sent_time = message[3]
 
-        messages.append({"ip": ip, "text": text, "time": sent_time})
+        messages.append({"id": id, "username": get_username(ip), "text": text, "time": sent_time})
     
     return messages
