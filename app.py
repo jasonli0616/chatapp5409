@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, flash
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 import dotenv
 import os
 import json
@@ -33,13 +33,18 @@ def index():
     return render_template("index.html", username=username)
 
 
-@socketio.on("send_message")
+@socketio.event
 def send_message(data):
     text = data["text"]
     if text:
         ip = request.remote_addr
         database.send_message(ip, text)
         socketio.emit("new_message", json.dumps(database.get_messages()))
+
+
+@socketio.event
+def get_messages():
+    emit("new_message", json.dumps(database.get_messages()))
 
 
 socketio.run(app, "0.0.0.0", port=80)
