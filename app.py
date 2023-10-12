@@ -39,7 +39,7 @@ def send_message(data):
     if text:
         ip = request.remote_addr
         database.send_message(ip, text)
-        socketio.emit("new_message", json.loads(database.get_messages()))
+        socketio.emit("new_message", json.dumps(database.get_messages()))
 
 
 socketio.run(app, "0.0.0.0", port=80)
