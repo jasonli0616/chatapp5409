@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash
+from flask import Flask, request, render_template, flash, redirect, url_for
 from flask_socketio import SocketIO, emit
 import dotenv
 import os
@@ -14,23 +14,28 @@ socketio = SocketIO(app)
 database.create_tables()
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def index():
     ip = request.remote_addr
-    username = None
-
-    if request.method == "GET":
-        username = database.get_username(ip)
-
-    else:
-        username = request.form["username"]
-        if username:
-            database.create_user(ip, username)
-        else:
-            flash("Username is required.")
-
+    username = database.get_username(ip)
 
     return render_template("index.html", username=username)
+
+
+@app.route("/change_username", methods=["POST"])
+def change_username():
+    ip = request.remote_addr
+    username = request.form["username"]
+    if username:
+        try:
+            database.create_user(ip, username)
+        except NameError:
+            flash("Username already exists.")
+            username = None
+    else:
+        flash("Username is required.")
+    
+    return redirect(url_for("index"))
 
 
 @socketio.event

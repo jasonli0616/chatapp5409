@@ -11,6 +11,10 @@ def create_tables():
 
 
 def create_user(ip, username):
+
+    if username_exists(username):
+        raise NameError("Username already exists.")
+
     # Search for existing user with IP
     db_cursor.execute("SELECT * FROM users WHERE ip=?", (ip,))
 
@@ -36,6 +40,11 @@ def get_username(ip):
         return username[0]
     else:
         return None
+
+
+def username_exists(username):
+    db_cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+    return db_cursor.fetchone() != None
 
 
 def get_messages():
