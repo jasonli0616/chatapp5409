@@ -1,8 +1,12 @@
 var socket = io();
 
 socket.on("connect", () => {
-    socket.emit("get_messages")
+    getMessages();
 })
+
+
+const displayAmountSelect = document.getElementById("displaylast");
+let defaultDisplayAmount = 10;
 
 
 function sendMessage() {
@@ -19,17 +23,23 @@ socket.on("new_message", (data) => {
 })
 
 
+function getMessages() {
+    socket.emit("get_messages");
+}
+
+
 function populateMessages(messagesRaw) {
     const messagesDiv = document.getElementById("displaymessages");
     let messages = JSON.parse(messagesRaw);
 
     // Clear div
-    messagesDiv.innerText = "";
+    messagesDiv.innerHTML = "";
 
-    // Insert 10 latest messages
-    for (let i = messages.length - 10; i < messages.length; i++) {
+    let startingMessage = messages.length - getDisplayAmount(messages.length);
+
+    // Insert messages
+    for (let i = startingMessage; i < messages.length; i++) {
         let msg = messages[i];
-        console.log(msg);
 
         const msgElement = document.createElement("div");
 
@@ -54,4 +64,48 @@ function populateMessages(messagesRaw) {
 
     }
 
+    updateDisplayAmountOptions(messages.length);
+
 }
+
+
+function getDisplayAmount(max) {
+    return Math.min(displayAmountSelect.value, max);
+}
+
+
+function updateDisplayAmountOptions(max) {
+
+    // Clear existing
+    displayAmountSelect.innerHTML = "";
+
+    // Options 1, 5, 10, 20, max
+    let options = [1, 5, 10, 20];
+    if (max > 20)
+        options.push(max);
+
+
+    for (let option of options) {
+        let element = document.createElement("option");
+        element.value = option;
+        element.textContent = option;
+        displayAmountSelect.appendChild(element);
+    }
+
+    if (defaultDisplayAmount > 20)
+        defaultDisplayAmount = max;
+    displayAmountSelect.value = defaultDisplayAmount;
+}
+
+
+function updateDisplayAmount() {
+    defaultDisplayAmount = displayAmountSelect.value;
+    getMessages();
+}
+
+
+document.getElementById("sendmessageform")
+    .addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendMessage();
+    })

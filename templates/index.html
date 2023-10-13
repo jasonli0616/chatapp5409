@@ -41,10 +41,25 @@
 
             <div class="card">
                 <div class="card-body">
+
+                    <h3 class="card-title">Messages</h3>
+
+                    <label for="displaylast">Display last </label>
+                    <select name="displaylast" id="displaylast" onchange="updateDisplayAmount()">
+                        <option value="1">1</option>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">10</option>
+                    </select>
+
+                    <hr>
+
                     <div id="displaymessages"></div>
 
-                    <input class="form-control mb-3" type="text" name="message" id="messageinput" placeholder="Type message..." required>
-                    <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                    <form id="sendmessageform">
+                        <input class="form-control mb-3" type="text" name="message" id="messageinput" placeholder="Type message..." required>
+                        <button class="btn btn-primary" type="submit">Send</button>
+                    </form>
                 </div>
             </div>
 
