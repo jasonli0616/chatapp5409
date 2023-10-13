@@ -32,16 +32,23 @@ function populateMessages(messagesRaw) {
         console.log(msg);
 
         const msgElement = document.createElement("div");
-        msgElement.className = "message";
+
+        const author = document.createElement("h5");
+        author.className = "card-title"
+        author.textContent = msg.username;
+
+        const datetime = document.createElement("h6");
+        datetime.classList = "card-subtitle";
+        datetime.textContent = msg.time;
 
         const content = document.createElement("p");
+        content.className = "card-text"
         content.textContent = msg.text;
 
-        const author = document.createElement("h2");
-        author.textContent = `${msg.username} at ${msg.time}`;
-
         msgElement.appendChild(author);
+        msgElement.appendChild(datetime);
         msgElement.appendChild(content);
+        msgElement.appendChild(document.createElement("hr"))
 
         messagesDiv.appendChild(msgElement);
 
