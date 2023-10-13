@@ -49,7 +49,7 @@ function populateMessages(messagesRaw) {
 
         const datetime = document.createElement("h6");
         datetime.classList = "card-subtitle";
-        datetime.textContent = msg.time;
+        datetime.textContent = new Date(msg.time * 1000).toLocaleString();
 
         const content = document.createElement("p");
         content.className = "card-text"

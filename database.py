@@ -29,7 +29,7 @@ def create_user(ip, username):
 
 
 def send_message(ip, message):
-    db_cursor.execute("INSERT INTO messages(ip, text, time) VALUES (?, ?, ?)", (ip, message, time.ctime()))
+    db_cursor.execute("INSERT INTO messages(ip, text, time) VALUES (?, ?, ?)", (ip, message, int(time.time())))
     db.commit()
 
 
