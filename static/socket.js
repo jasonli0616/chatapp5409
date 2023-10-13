@@ -5,29 +5,48 @@ socket.on("connect", () => {
 })
 
 
+// Dropdown to select how many messages to display.
 const displayAmountSelect = document.getElementById("displaylast");
 let defaultDisplayAmount = 10;
 
 
+/**
+ * Handles sending a message.
+ * 
+ * Takes input and emits event to backend.
+ */
 function sendMessage() {
     let textInputElement = document.getElementById("messageinput");
     let message = textInputElement.value;
 
-    textInputElement.value = ""
-    socket.emit("send_message", {text: message});
+    if (message) {
+        textInputElement.value = ""
+        socket.emit("send_message", {text: message});
+    }
 }
 
 
+/**
+ * Listens for broadcasted messages, and populates.
+ */
 socket.on("new_message", (data) => {
     populateMessages(data);
 })
 
 
+/**
+ * Emit event to get messages.
+ */
 function getMessages() {
     socket.emit("get_messages");
 }
 
 
+/**
+ * Populate the messages section.
+ * 
+ * @param {*} messagesRaw raw JSON string of messages
+ */
 function populateMessages(messagesRaw) {
     const messagesDiv = document.getElementById("displaymessages");
     let messages = JSON.parse(messagesRaw);
@@ -69,11 +88,22 @@ function populateMessages(messagesRaw) {
 }
 
 
+/**
+ * Returns the lowest value out of [selected, max].
+ * 
+ * @param {*} max number of messages
+ * @returns amount of messages to display
+ */
 function getDisplayAmount(max) {
     return Math.min(displayAmountSelect.value, max);
 }
 
 
+/**
+ * Updates the display amount options with the total number of messages.
+ * 
+ * @param {*} max 
+ */
 function updateDisplayAmountOptions(max) {
 
     // Clear existing
@@ -98,12 +128,18 @@ function updateDisplayAmountOptions(max) {
 }
 
 
-function updateDisplayAmount() {
+/**
+ * Listens to user changing display amount, and updates.
+ */
+document.getElementById("displaylast").addEventListener("change", () => {
     defaultDisplayAmount = displayAmountSelect.value;
     getMessages();
-}
+})
 
 
+/**
+ * Handle message send, and prevents refresh.
+ */
 document.getElementById("sendmessageform")
     .addEventListener("submit", (e) => {
         e.preventDefault();

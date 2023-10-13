@@ -6,11 +6,18 @@ db_cursor = db.cursor()
 
 
 def create_tables():
+    """Create all tables if they do not already exist."""
+
     db_cursor.execute("CREATE TABLE IF NOT EXISTS users (ip TEXT PRIMARY KEY, username TEXT)")
     db_cursor.execute("CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT, text TEXT, time TEXT)")
 
 
 def create_user(ip, username):
+    """
+    Attempt to create a user or change username, matching IP and username.
+
+    Does not allow duplicate usernames.
+    """
 
     if username_exists(username):
         raise NameError("Username already exists.")
@@ -29,11 +36,19 @@ def create_user(ip, username):
 
 
 def send_message(ip, message):
+    """
+    Adds message to database.
+
+    Does not do any validation, assumes all data is already validated.
+    """
+
     db_cursor.execute("INSERT INTO messages(ip, text, time) VALUES (?, ?, ?)", (ip, message, int(time.time())))
     db.commit()
 
 
 def get_username(ip):
+    """Get username from IP."""
+
     db_cursor.execute("SELECT username FROM users WHERE ip=?", (ip,))
     username = db_cursor.fetchone()
     if username:
@@ -43,11 +58,15 @@ def get_username(ip):
 
 
 def username_exists(username):
+    """Returns whether username exists."""
+
     db_cursor.execute("SELECT * FROM users WHERE username=?", (username,))
     return db_cursor.fetchone() != None
 
 
 def get_messages():
+    """Get all messages in a list."""
+
     db_cursor.execute("SELECT * FROM messages")
     messages_raw = db_cursor.fetchall()
     messages = []

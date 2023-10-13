@@ -16,6 +16,8 @@ database.create_tables()
 
 @app.route("/")
 def index():
+    """Show homepage."""
+
     ip = request.remote_addr
     username = database.get_username(ip)
 
@@ -24,6 +26,12 @@ def index():
 
 @app.route("/change_username", methods=["POST"])
 def change_username():
+    """
+    Form sends POST request here to create/change username.
+
+    This will attempt to create/edit user, and redirect to homepage with success/failure alert.
+    """
+    
     ip = request.remote_addr
     username = request.form["username"]
     if username:
@@ -41,6 +49,12 @@ def change_username():
 
 @socketio.event
 def send_message(data):
+    """
+    Handles user sending message from frontend.
+
+    Adds message to database, and broadcasts JSON of messages.
+    """
+
     text = data["text"]
     if text:
         ip = request.remote_addr
@@ -50,6 +64,8 @@ def send_message(data):
 
 @socketio.event
 def get_messages():
+    """Handles request for messages, and emits back JSON of messages."""
+
     emit("new_message", json.dumps(database.get_messages()))
 
 
