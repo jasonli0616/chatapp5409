@@ -29,11 +29,12 @@ def change_username():
     if username:
         try:
             database.create_user(ip, username)
+            flash("Username successfully created/changed.", "success")
         except NameError:
-            flash("Username already exists.")
+            flash("Username already exists.", "danger")
             username = None
     else:
-        flash("Username is required.")
+        flash("Username is required.", "danger")
     
     return redirect(url_for("index"))
 

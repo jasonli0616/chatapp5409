@@ -10,6 +10,19 @@
 
     <div class="container my-3">
 
+        {% with flashed_messages = get_flashed_messages(with_categories=True) %}
+            {% if flashed_messages %}
+                {% for flashed_category, flashed_message in flashed_messages %}
+
+                    <div class="alert alert-{{ flashed_category }} alert-dismissible fade show">
+                        {{ flashed_message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <div class="card mb-3">
             <div class="card-body">
                 <h1 class="card-title">Welcome to Chat App 5409!</h1>
@@ -66,21 +79,6 @@
         {% endif %}
 
     </div>
-
-
-
-
-    {% with flashed_messages = get_flashed_messages() %}
-        {% if flashed_messages %}
-            <script>
-                {% for flashed_message in flashed_messages %}
-
-                    alert("{{ flashed_message }}");
-
-                {% endfor %}
-            </script>
-        {% endif %}
-    {% endwith %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='socket.js') }}"></script>
